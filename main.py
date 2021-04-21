@@ -1,9 +1,12 @@
+import os
+
 import pandas as pd
 from datetime import date
 import time
 import csv
 from bs4 import BeautifulSoup
 import requests
+import DBConnetion
 def getSoup():
     url = "https://www.wallstreet-online.de/indizes/put-call-sentiment-dax-index"
     page = requests.get(url).text
@@ -28,15 +31,40 @@ def writeToCSV(sentiment_liste):
     with open("Sentiment.csv","a") as fd:
         wr = csv.writer(fd, dialect='excel')
         wr.writerow(sentiment_liste)
+        fd.close()
 
+def readCSV():
+    with open("Sentiment.csv") as fd:
+        csv_read = csv.reader(fd, delimiter=',')
+        line_count = 0
+        conn = DBConnetion.createConnection()
+        for row in csv_read:
+            if line_count == 0:
+                print(f'Column names are {", ".join(row)}')
+                line_count += 1
+            else:
+                DBConnetion.insertCSV(conn,row)
+        fd.close()
+    os.remove("Sentiment.csv")
+
+
+
+
+TO_DB = 5
+counter_TO_DB = 0
 while(True):
     my_soup = getSoup()
     sentiment = my_soup.find("tr")
     sentiment_liste = getSentiment(sentiment)
-    sentiment_liste.append(str(getLastUpdate(my_soup)))
-    sentiment_liste.append(date.today())
+    sentiment_liste.append(str(date.today()) + " " + str(getLastUpdate(my_soup)))
     writeToCSV(sentiment_liste)
-    time.sleep(30)
+    counter_TO_DB +=1
+    if(counter_TO_DB == TO_DB):
+        readCSV()
+        print("Finish")
+        break
+    print(counter_TO_DB)
+    time.sleep(60)
 
 
 
