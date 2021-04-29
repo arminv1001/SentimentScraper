@@ -68,7 +68,7 @@ def readCSV():
 
 if __name__ == "__main__":
     # start Scraper
-    TO_DB = 2 # After how much csv entrys ride to DB
+    TO_DB = 10 # After how much csv entrys ride to DB
     counter_TO_DB = 0
     logging.basicConfig(level=logging.INFO,filename='sentiment_scrapper_log.txt', format='%(levelname)s - %(message)s')
     while(True):
@@ -80,12 +80,12 @@ if __name__ == "__main__":
         counter_TO_DB +=1
         if(counter_TO_DB == TO_DB):
             readCSV()
-            counter_TO_DB = 0
+            logging.info("{} / {} - wrote to CSV".format(counter_TO_DB, TO_DB))
             logging.info("wrote to DB - restart cycle" )
-            break
+            counter_TO_DB = 0
         else:
             logging.info("{} / {} - wrote to CSV".format(counter_TO_DB,TO_DB))
-        time.sleep(5)
+        time.sleep(80)
 
 
 
