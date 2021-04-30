@@ -13,7 +13,10 @@ def getSoup():
     :return: the page in beatiful soup - object
     """
     url = "https://www.wallstreet-online.de/indizes/put-call-sentiment-dax-index"
-    page = requests.get(url).text
+    try:
+        page = requests.get(url).text
+    except:
+        return None
     my_soup = BeautifulSoup(page,"html.parser")
     return my_soup
 

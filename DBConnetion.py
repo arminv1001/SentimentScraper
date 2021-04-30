@@ -14,21 +14,19 @@ def create_table(conn, create_table_sql):
 def createConnection():
     """
     Creates the necessary tables if they arent already existing.
-    :return: connection
+    :return: connection to database
     """
-    try:
-        conn = sqlite3.connect('SentimentDB.db')
-        logging.info("Connected")
-        sentimentTable_SQL = """ CREATE TABLE IF NOT EXISTS Sentiment (
-                                                id integer PRIMARY KEY AUTOINCREMENT,
-                                                call_s integer NOT NULL,
-                                                putt_s integer NOT NULL,
-                                                timeStempel datetime UNIQUE
-                                            ); """
-        create_table(conn, sentimentTable_SQL)
-        return conn
-    except sqlite3.Error as error:
-        logging.error("Error while connecting to sqlite", error)
+    conn = sqlite3.connect('SentimentDB.db')
+    logging.info("Connected")
+    sentimentTable_SQL = """ CREATE TABLE IF NOT EXISTS Sentiment (
+                                            id integer PRIMARY KEY AUTOINCREMENT,
+                                            call_s integer NOT NULL,
+                                            putt_s integer NOT NULL,
+                                            timeStempel datetime UNIQUE
+                                        ); """
+    create_table(conn, sentimentTable_SQL)
+    return conn
+
 
 def insertCSV(conn,row_csv):
     """
